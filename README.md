@@ -1,0 +1,2 @@
+# nkbase
+NkBASE distributed database
