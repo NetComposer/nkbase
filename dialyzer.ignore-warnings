@@ -1,0 +1,7 @@
+nkbase_admin.erl:163: The pattern {'error', _} can never match since previous clauses completely covered the type 'ok' | {'error','different_ring_sizes' | 'not_reachable' | 'not_single_node' | 'self_join' | 'unable_to_get_join_ring'}
+nkbase_admin.erl:309: The pattern {'error', 'legacy_mode'} can never match the type {'error','is_up' | 'not_member' | 'only_member'}
+nkbase_vnode_worker.erl:25: Callback info about the riak_core_vnode_worker behaviour is not available
+nkbase_coverage_fsm.erl:25: Callback info about the riak_core_coverage_fsm behaviour is not available
+nkbase_dmap.erl:303: The pattern {'error', {'precondition', {'not_present', {Field, _Type}}}} can never match the type {'ok',{[{_,integer()}],dict:dict(_,_),dict:dict(_,_)}}
+Unknown functions:
+  'mochiglobal:nkbase_idx2pos':term/0

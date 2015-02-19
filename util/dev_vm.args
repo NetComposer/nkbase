@@ -1,0 +1,42 @@
+-pa deps/basho_stats/ebin
+-pa deps/bear/ebin
+-pa deps/clique/ebin
+-pa deps/cluster_info/ebin
+-pa deps/cuttlefish/ebin
+-pa deps/edown/ebin
+-pa deps/eleveldb/ebin
+-pa deps/exometer_core/ebin
+-pa deps/folsom/ebin
+-pa deps/getopt/ebin
+-pa deps/goldrush/ebin 
+-pa deps/lager/ebin
+-pa deps/meck/ebin
+-pa deps/neotoma/ebin
+-pa deps/parse_trans/ebin
+-pa deps/pbkdf2/ebin
+-pa deps/poolboy/ebin
+-pa deps/riak_core/ebin
+-pa deps/riak_dt/ebin
+-pa deps/riak_ensemble/ebin
+-pa deps/riak_sysmon/ebin
+-pa deps/setup/ebin
+-pa deps/sext/ebin
+-pa ebin
+
+## Name of the node
+# -name nkbase_shell@127.0.0.1
+-setcookie nkcore
+
+## More processes
++P 1000000
+
+## Treat error_logger warnings as warnings
++W w
+
+## Increase number of concurrent ports/sockets
+-env ERL_MAX_PORTS 65535
+
+## Set the location of crash dumps
+-env ERL_CRASH_DUMP .
+
+

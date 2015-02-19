@@ -1,0 +1,12 @@
+            -*- html -*-
+
+    NkBASE Distributed Database
+
+
+@author Carlos Gonzalez Florido <carlosj.gf@gmail.com>
+@copyright 2015 Carlos Gonzalez Florido
+@version 0.1.0
+@title NkBASE Distributed Database
+
+@doc NkBASE is an Erlang distributed key-value database designed to be integrated into distributed Erlang applications. 
+
