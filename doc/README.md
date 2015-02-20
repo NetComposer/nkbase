@@ -1,15 +1,16 @@
 # Welcome to NkSIP Documentation
 
-## User Guide
-
-[ 0. General Concepts](concepts.md)<br/>
-[ 1. Tutorial](tutorial.md)<br/>
-[ 2. Eventually consistent mode](eventually_consistent.md)<br/>
-[ 3. Self-convergent mode using DMAPs](dmaps.md)<br/>
-[ 4. Strong consistent mode](strong_consistent.md)<br/>
-[ 5. Search](search.md)<br/>
-[ 6. Management](management.md)<br/>
-[ 7. Roadmap](roadmap.md)<br/>
-[ 8. Changelog](changelog.md)<br/>
-
+* [Introduction and Concepts](concepts.md)<br/>
+* Tutorials
+	* [Introduction](tutorial_basic.md)<br/>
+	* [Searching](tutorial_search.md)<br/>
+	* [Using DMaps](tutorial_dmaps.md)<br/>
+	* [Strong Consistency](tutorial_sc.md)<br/>
+* [Eventually consistent mode](eventually_consistent.md)<br/>
+* [Self-convergent mode using DMaps](self_convergent.md)<br/>
+* [Strong consistent mode](strong_consistency.md)<br/>
+* [Searching](search.md)<br/>
+* [Management](management.md)<br/>
+* [Roadmap](roadmap.md)<br/>
+* [Changelog](changelog.md)<br/>
 
