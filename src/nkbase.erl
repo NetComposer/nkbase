@@ -262,6 +262,7 @@
 	#{
 		backend => backend(),
 		n => pos_integer(),
+		timeout => pos_integer(),
 		start => key(),					% Key to start (default: first key)
 		stop =>  key(),					% Key to stop (default: last key)
 		page_size => pos_integer(),		% 
@@ -436,10 +437,6 @@ get(Domain, Class, Key) ->
 %%				will be the returned value, and the server will also overwrite this 
 %%				value in all vnodes to resolve the conflict
 %%
-%% If all of the conflicting objects are dmap()'s, or the server detects that any
-%% conflicting value is a new version of a stored value (using the context) it is 
-%% automatically reconciled.
-%% 
 %% The server then waits for the remaining (up to 'n') nodes to respond, 
 %% reconciles again, and updates the 'winning' value in all vnodes back (read repair).
 %%
@@ -501,8 +498,6 @@ put(Domain, Class, Key, Object) ->
 %% - fun():     if you supply a function, it will be called with all the conflicting
 %%			    objects, and you must select one of them or create a new one.
 %% 
-%% If the object is an dmap(), conflicts will be automatically resolved.
-%%
 %% Please notice that an 'ok' response means that all the requested vnodes 
 %% ('w' parameter) have received and stored the object. It does not mean that
 %% there is no conflict. An error response means that some of the vnodes have 
