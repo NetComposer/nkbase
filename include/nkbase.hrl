@@ -4,7 +4,7 @@
 -define(DEFAULT_N, 3).
 -define(DEFAULT_BACKEND, leveldb).
 -define(DEFAULT_PAGE_SIZE, 1000).
--define(DEFAULT_TIMEOUT, 5).
+-define(DEFAULT_TIMEOUT, 30).
 -define(DEFAULT_DEL_TTL, 3600).
 
 -define(CLASS_PREFIX, {nkbase, class}).
