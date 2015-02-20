@@ -27,47 +27,47 @@ For each _backend_, you can store any Erlang object uniquely identified by a _Do
 
 To retrieve the object, you must know the Domain, Class and Key. NkBASE allows to perform several operations on all of the objects having a specific Domain and Class, like listing keys, searching or reindexing.
 
-NkBASE supports currently two backends:
+NkBASE supports currently two different backends:
 * **LevelDB**: persistent store based on Basho version of Google's LevelDB. This is the default backend.
 * **Ets**: non-persistent memory based store, based on Erlang ETS tables
 
-Most operations can be performed on any backend. However, the strong consistency subsystems can only use the leveldb backend, since it needs a persistent backend.
+Most operations can be performed on any backend. However, the strong consistency subsystems can only use leveldb, since it needs a persistent backend.
 
 ### Operation modes
 
 NkBASE supports three diferent operation modes for each write and get:
-* **Eventualy consistent mode**. In this mode, NkBASE will always accept your write, and it will try to copy it to the number of nodes indicated by the ``n`` parameter. You must supply the _context_ of the object you are updating. If the object has changed since you got the context, or several writes happen at the same time, a conflict will occur. Depending on the value of the ```reconcile``` parameter, NkBASE will store both objects or will resolve the conflict. When you read the objects, if not all vnodes offer the same object, a _read repair_ operation will happen. See [Eventually Consistent Mode](eventually_consistent.md) for more information.
-* ** Self-convergent mode**. This mode is very similar to the eventually consistent mode, however NkBASE uses a special object called a _dmap_, that happens to know how to resolve conflicts automatically. You are not allows to write full objects, but send _updates_ to the object, that NkBASE will apply to the real object. If several users send conflicting modifications at the same time, a well-known policy is used to apply them. See [Self-convergent Mode](self_convergent.md) for more information.
-* ** Strong consistent mode**. Using this mode, it is guaranteed by NkBASE that all updates are consistent, and no conflict can occur. You must use the _object sequence_ for any update. If the object has been modified since you got the sequence, a faillure will happen. The trade-off is that, in case of node faillures, write and get operations can fail until a new leader is elected. See [Strong Consistent Mode](strong_consistent.md) for more information.
+* **Eventualy consistent mode**. In this mode, NkBASE will always accept your writes, and it will try to copy it to the number of nodes indicated by the `n` parameter. You must supply the _context_ of the object you are updating. If the object has changed since you got the context, or several writes happen at the same time, a conflict will occur. Depending on the value of the `reconcile` parameter, NkBASE will store both objects or will resolve the conflict by itself automatically. When you read any object, if not all `n` vnodes offer the same object, a _read repair_ operation will happen. See [Eventually Consistent Mode](eventually_consistent.md) for more information.
+* **Self-convergent mode**. This mode is very similar to the eventually consistent mode, however NkBASE uses a special object called a _dmap_, that happens to know how to resolve conflicts automatically. You are not allowed to write full objects, but to send _updates_ that NkBASE will apply to the real object. If several users send conflicting modifications at the same time, a well-known policy is used to apply them. See [Self-convergent Mode](self_convergent.md) for more information.
+* **Strong consistent mode**. Using this mode, it is guaranteed by NkBASE that all writes and reads are consistent, and no conflict can occur. You must use the _object sequence_ for any update. If the object has been modified since you got the sequence, a faillure will be returned and the object will not be modifed. The trade-off is that, in case of node faillures, write and get operations can fail during a small period of time. See [Strong Consistent Mode](strong_consistent.md) for more information.
 
 
 ## Class Metadata
 
-Instead of having to supply the metadata for each operaiton in the get or put call, NkBASE allows you to define metadata associated to a specific Domain and Class, and it will be stored in all of the nodes of the cluster automatically, so you don't need to include anymore in any API call.
+Instead of having to supply the metadata for each get or put operation, NkBASE allows you to define any metadata associated to a specific _Domain_ and _Class_, and it will be replicated automatically to all of the nodes of the cluster, so you wont't need to include it anymore in any API call.
 
-To define a class, you must use the ```nkbase:register_class/3`` function, for example:
+To define a class, you must use the `nkbase:register_class/3` function, for example:
 
 ```erlang
-nkbase:register_class("my_domain", "my_class", #{
-   backend => ets,
-   n => 3,
-   indices = [
-    {index_1, field_1},
-    {index_2, field_2}
-  ]
-})
+nkbase:register_class("my_domain", "my_class", 
+   #{
+      backend => ets,
+      n => 3,
+      indices => 
+         [
+            {index_1, field_1},
+            {index_2, field_2}
+         ]
+   }
+)
 ```
       
-The class definition will overwrite any previous definition and will be sent to every node in the cluster. To avoid ovewriting previous class definitions, you can add a version:
+The class definition will overwrite any previous definition. To avoid overwriting previous class definitions, you can add a version:
 
 ```erlang
-nkbase:register_class("my_domain", "my_class", #{
-    vsn => 17
-    ...
-})
+nkbase:register_class("my_domain", "my_class", #{n=>3, vsn => 17})
 ```
 
-this way the new definition will not overwrite old versions. You can also define a class to be an _alias_ for another class, so you don't have to define it twice.
+this way the new definition will not overwrite any old version. You can also define a class to be an _alias_ for another class, so you don't have to define it twice.
       
 Use ```nkbase:get_classes/0```, ```nkbase:get_classes/1``` and ```nkbase:get_classes/2``` to find currently defined classes, and ```nkbase:get_class/2``` to find the current definition for a defined class.
       
@@ -87,9 +87,9 @@ All operation modes support auto-expiration of keys. When you store an object, y
 nkbase:put(domain, my_class, key1, value1, #{ttl=>5}
 ```
 
-NkBASE will program Erlang timers for near-to-fire removal (see `expire_check` option), with a configurable resolution (default 1 sec, minimum 1 msec, see `expire_resolution` config option). Far ahead timers are not scheduled yet to save resources. A periodically runed process schedules them when they are near to fire. 
+NkBASE will program Erlang timers for near-to-fire removals (see `expire_check` option), with a configurable resolution  (default 1sec, minimum 1 msec, see `expire_resolution` config option). More resolution provides more accurancy, but requires more cpu time and resources. Far ahead timers are not scheduled yet to save resources. A periodical process schedules them when they are near to fire. 
 
-This way, NkBASE can support millions of objects with automatic expiration, for very short or long expiration times.
+NkBASE can support millions of objects with automatic expiration, for very short or long expiration times.
 
 
 
