@@ -36,7 +36,7 @@ NkBASE has a clean code base, and can be used as a starting point to learn how t
 	* [Strong Consistency](doc/tutorial_sc.md)<br/>
 * [Eventually consistent mode](doc/eventually_consistent.md)<br/>
 * [Self-convergent mode using DMaps](doc/self_convergent.md)<br/>
-* [Strong consistent mode](doc/strong_consistency.md)<br/>
+* [Strong consistency mode](doc/strong_consistency.md)<br/>
 * [Searching](doc/search.md)<br/>
 * [Management](doc/management.md)<br/>
 * [Roadmap](doc/roadmap.md)<br/>
