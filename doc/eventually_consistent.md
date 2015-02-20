@@ -82,7 +82,7 @@ r|`1..5`|3|Number of nodes to take into account for the read operations
 reconcile|`nkbase:reconcile()`|`undefined`|See bellow
 timeout|`integer()`|`30`|Time to wait for the write operation
 get_fields|`[term()|tuple()]`|`undefined`|Receive these fields instead of the full object
-get_indices|`[nkbase:index_name()]`|`undefined`|Receive these indices instead of the full objecy
+get_indices|`[nkbase:index_name()]`|`undefined`|Receive these indices instead of the full object
 
 NkBASE will send the read request to the same `n` vnodes used to store this object, and will wait for `r` vnodes to send an answer. If any vnode sends an error, the full operation is aborted. If any one sends _not found_ it is ignored. If a non-conflicting value emerges, it is returned, along with its context. If the found object is _deleted_ (but not yet _removed_) `{deleted, Ctx}` is returned. 
 
