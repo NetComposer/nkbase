@@ -300,7 +300,7 @@ fun_update(_ExtKey, [{_ObjMeta, {'$nkmap', BinMap}}], Update, VNode) ->
 				{ok, DtMap1} ->
 					BinMap1 = riak_dt_map:to_binary(DtMap1),
 					{ok, {'$nkmap', BinMap1}};
-				{error, {precondition, {not_present, {Field, _Type}}}} ->
+				{error, {precondition, {not_present, Field}}} ->
 					{error, {field_not_present, Field}}
 			end;
 		{error, Error} ->
