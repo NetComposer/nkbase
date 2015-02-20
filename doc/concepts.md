@@ -70,7 +70,7 @@ nkbase:register_class("my_domain", "my_class", #{n=>3, vsn => 17})
 
 this way the new definition will not overwrite any old version. You can also define a class to be an _alias_ for another class, so you don't have to define it twice.
       
-Use ```nkbase:get_classes/0```, ```nkbase:get_classes/1``` and ```nkbase:get_classes/2``` to find currently defined classes, and ```nkbase:get_class/2``` to find the current definition for a defined class.
+Use `nkbase:get_classes/0,1,2` to find currently defined classes, and `nkbase:get_class/2` to find the current definition for a defined class.
       
       
 ## Indices and searching
