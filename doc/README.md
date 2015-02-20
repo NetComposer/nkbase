@@ -8,6 +8,5 @@
 * [Management](management.md)<br/>
 * [Roadmap](roadmap.md)<br/>
 * [Changelog](changelog.md)<br/>
-* 
 
 
