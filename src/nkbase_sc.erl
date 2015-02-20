@@ -164,7 +164,7 @@ kput(Domain, Class, Key, Obj, Meta) ->
 
 %% @doc Same as kdel(Domain, Class, Key, Data, #{})
 -spec kdel(nkbase:domain(), nkbase:class(), nkbase:key()) ->
-	{ok, eseq()} | {error, term()}.
+	ok | {error, term()}.
 
 kdel(Domain, Class, Key) ->
 	kdel(Domain, Class, Key, #{}).
@@ -172,7 +172,7 @@ kdel(Domain, Class, Key) ->
 
 %% @doc Puts a new value in the database
 -spec kdel(nkbase:domain(), nkbase:class(), nkbase:key(), kput_meta()) ->
-	{ok, eseq()} | {error, term()}.
+	ok | {error, term()}.
 
 
 kdel(Domain, Class, Key, Meta) ->
