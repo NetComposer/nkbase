@@ -29,11 +29,6 @@ NkBASE has a clean code base, and can be used as a starting point to learn how t
 # Documentation
 
 * [Introduction and Concepts](doc/concepts.md)<br/>
-* Tutorials
-	* [Introduction](doc/tutorial_basic.md)<br/>
-	* [Searching](doc/tutorial_search.md)<br/>
-	* [Using DMaps](doc/tutorial_dmaps.md)<br/>
-	* [Strong Consistency](doc/tutorial_sc.md)<br/>
 * [Eventually consistent mode](doc/eventually_consistent.md)<br/>
 * [Self-convergent mode using DMaps](doc/self_convergent.md)<br/>
 * [Strong consistency mode](doc/strong_consistency.md)<br/>
