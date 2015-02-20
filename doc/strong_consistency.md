@@ -6,7 +6,7 @@ See [Introduction and Concepts](concepts.md) for and introduction to NkBASE, the
 * [Write Operation](#write-operation)
 * [Read Operation](#read-operation)
 * [Delete Operation](#delete-operation)
-* [Listing Domains, Classes and Keys](#listing-domains-class-and-keys)
+* [Listing Domains, Classes and Keys](#listing-domains-classes-and-keys)
 * [Examples](#examples)
 
 
@@ -16,7 +16,7 @@ When using the strong consistency mode, NkBASE guarantees that, if a write opera
 
 Each write operation generates an unique _sequence number_. No client can update an existing object without knowing its current _sequence number_, that can be obtained after any write or calling `nkbase:kget/3,4`.
 
-The consensus subsystem is not started automatically. There are different methods to start it:
+The consensus subsystem is not started automatically. There are three different methods to start it:
 
 1. The recommended way is setting the riak core [configuration parameter](configuration.md) `enable consensus` to `true`, and once the third node is added to the cluster, the consensus subsystem is automatically started. Riak core waits for the third node to be sure that it is started exactly once in the cluster.
 1. With any number of nodes in the cluster, you can call `nkbase_ensemble:enable()` to start the subsystem. However, you must be absolutely sure that you enable it only once in the cluster. 
@@ -30,7 +30,7 @@ When the node that has the master for an ensemble dies, a new leader must be ele
 
 As the key namespace for eventual and strong consistency operations is the same, you must be sure about not mixing both types of operations over the same specific object. It is recommended to define a class for every strong consistency operation, using the opcion `sc => true`. This way, NkBASE will not allow eventual consistency operations using this class.
 
-Strong consistency only support the _leveldb` backend currently.
+Strong consistency only support the _leveldb_ backend currently.
 
 
 ## Write Operation
@@ -56,7 +56,7 @@ pre_write_hook|`nkbase:pre_write_fun()`|`undefined`|See bellow
 post_write_hook|`nkbase:post_write_fun()`|`undefined`|See bellow
 eseq|`new | overwrite | nkbase_sc:eseq()`|`new`|Sequence number to use to update an object
 
-NkBASE will find the corresponding ensemble for this class and key, find its master and send the write operation to it. The master will save the object and will send it two the rest of followers, that will also store the object.
+NkBASE will find the corresponding ensemble for this class and key, find its master and send the write operation to it. The master will save the object and will send it to the rest of followers, that will also store the object. If you use a value of `n` different thant the default (3), you MUST define a class a wait for the ensemble subsystem to detect it,
 
 If the master is not available, the operation will fail.
 
@@ -83,21 +83,19 @@ Parameter|Type|Default|Description
 ---|---|---|---
 n|`1..5`|3|Number of copies of the stored object
 timeout|`integer()`|`30`|Time to wait for the write operation
-get_fields|`[term()|tuple()]`|`undefined`|Receive these fields instead of the full object
-get_indices|`[nkbase:index_name()]`|`undefined`|Receive these indices instead of the full objecy
 read_repair|`boolean()`|false|Use read repair (see bellow)
 
-NkBASE will find the corresponding ensemble for this class and key, find its master and send the get operation to it. Under some circumstances, and if the `read_repair` option is not set, the master will reply without consulting its followers. Otherwise, all followers reply, and, if some of the has an old version of the data, it is corrected by the master.
+NkBASE will find the corresponding ensemble for this class and key, find its master and send the get operation to it. Under some circumstances, and only if the `read_repair` option is not set, the master will reply without consulting its followers. Otherwise, all followers reply, and, if some of the has an old version of the data, it is corrected by the master.
 
 
 ## Delete operation
 
 ```erlang
 -spec kdel(nkbase:domain(), nkbase:class(), nkbase:key()) ->
-	{ok, nkbase_sc:eseq()} | {error, term()}.
+	ok | {error, term()}.
 
 -spec kdel(nkbase:domain(), nkbase:class(), nkbase:key(), kput_meta()) ->
-	{ok, nkbase_sc:eseq()} | {error, term()}.
+	ok | {error, term()}.
 ```
 
 The strong consistency system does not currently fully removes objects at any time. When a delete operation success, the object is actually marked as deleted but not fully removed.
