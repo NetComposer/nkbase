@@ -4,7 +4,7 @@ NkBASE is a distributed, highly available key-value database designed to be inte
 
 NkBASE uses a no-master, share-nothing architecture, where no node has any special role. It is able to store multiple copies of each object to achive high availabity and to distribute the load evenly among the cluster. Nodes can be added and removed on the fly. It shows low latency, and it is very easy to use. 
 
-NkBASE has some special features, like been able to work simultaneously as a [**eventually consistent**](http://www.allthingsdistributed.com/2008/12/eventually_consistent.html) database using _Dotted Version Vectors_, a [**strong consistent**](http://docs.basho.com/riak/latest/theory/concepts/strong-consistency/) database and a [**eventually consistent, self-convergent**](http://research.microsoft.com/apps/video/default.aspx?id=153540&r=1) database using CRDTs called _dmaps_. It has also a flexible and easy to use [**query language**](docs/search.md) that (under some circunstances) can be very efficient, and has powerful support for [**auto-expiration**](doc/concepts.md#automatic-expiration) of objects.
+NkBASE has some special features, like been able to work simultaneously as a [**eventually consistent**](http://www.allthingsdistributed.com/2008/12/eventually_consistent.html) database using _Dotted Version Vectors_, a [**strong consistent**](http://docs.basho.com/riak/latest/theory/concepts/strong-consistency/) database and a [**eventually consistent, self-convergent**](http://research.microsoft.com/apps/video/default.aspx?id=153540&r=1) database using CRDTs called _dmaps_. It has also a flexible and easy to use [**query language**](doc/search.md) that (under some circunstances) can be very efficient, and has powerful support for [**auto-expiration**](doc/concepts.md#automatic-expiration) of objects.
 
 The minimum recommended cluster size for NkBASE is three nodes, but it can work from a single node to hundreds of them. However, NkBASE is not designed for very high load or huge data (you really should use the excellent [**Riak**](http://basho.com/riak/) and [**Riak Enterprise**](http://basho.com/riak-enterprise/) for that), but as an in-system, flexible and easy to use database, useful in multiple scenarios like configuration, sessions, cluster coordination, catalogue search, temporary data, cache, field completions, etc. In the future, NetComposer will be able to start and manage multiple kinds of services, including databases like a full-blown Riak.
 
@@ -30,15 +30,15 @@ NkBASE has a clean code base, and can be used as a starting point to learn how t
 
 * [Introduction and Concepts](doc/concepts.md)<br/>
 * Tutorials
-	* [Basic](doc/tutorial_basic.md)<br/>
-	* [Search](doc/tutorial_search.md)<br/>
-	* [DMaps](doc/tutorial_dmaps.md)<br/>
+	* [Introduction](doc/tutorial_basic.md)<br/>
+	* [Searching](doc/tutorial_search.md)<br/>
+	* [Using DMaps](doc/tutorial_dmaps.md)<br/>
 	* [Strong Consistency](doc/tutorial_sc.md)<br/>
-* Eventually consistent mode<br/>
-* Self-convergent mode using DMAPs<br/>
-* Strong consistent mode<br/>
-* Search<br/>
-* Management<br/>
+* [Eventually consistent mode](doc/eventually_consistent.md)<br/>
+* [Self-convergent mode using DMaps](doc/self_convergent.md)<br/>
+* [Strong consistent mode](doc/strong_consistency.md)<br/>
+* [Searching](doc/search.md)<br/>
+* [Management](management.md)<br/>
 * [Roadmap](doc/roadmap.md)<br/>
 * [Changelog](doc/changelog.md)<br/>
 
