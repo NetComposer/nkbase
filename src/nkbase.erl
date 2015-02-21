@@ -111,7 +111,7 @@
 %% splitted into different values, using spaces as separators.
 
 -type index_spec_type() :: 
-	key | {field, term()} | {func, fun((ext_key(), obj()) -> term()|[term()])} |
+	key | {field, term()|tuple()} | {func, fun((ext_key(), obj()) -> term()|[term()])} |
 	term() | [term()].
 
 -type index_spec_opts() :: 
@@ -272,7 +272,6 @@
 
 %% Search Metadata
 -type search_meta() ::
-	get_meta() |
 	#{
 		backend => backend(),
 		n => pos_integer(),
