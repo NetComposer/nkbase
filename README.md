@@ -38,6 +38,49 @@ NkBASE has a clean code base, and can be used as a starting point to learn how t
 * [Changelog](doc/changelog.md)<br/>
 
 
+# Quick Start
+
+Follow this steps to start a 5-node development cluster in a single machine:
+
+```
+git clone https://github.com/Nekso/nkbase.git
+cd nkbase
+make
+make dev1
+```
+
+then, at another terminal console:
+```
+cd nkbase
+make dev2
+
+> nkbase_admin:join("dev1@127.0.0.1").
+ok
+```
+
+and repeat for nodes 3 to 5.
+Then go to any of the nodes and run:
+
+```
+> nkbase_admin:cluster_plan().
+ok
+
+> nkbase_admin:cluster_commit().
+ok
+```
+
+Congratulations! Now you have a 5-node NkBASE cluster. At any of the nodes, type:
+
+```
+> nkbase:put(domain, class, key, "my_value")
+ok
+```
+
+and, at any other node,
+```
+> nkbase:get(domain, class, key)
+{ok, ..., "my_value"}
+```
 
 # Contributing
 
