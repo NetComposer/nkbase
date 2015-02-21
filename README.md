@@ -56,6 +56,7 @@ cd nkbase
 make dev2
 
 > nkbase_admin:join("dev1@127.0.0.1").
+Success: staged join request for 'dev2@127.0.0.1' to "dev1@127.0.0.1"
 ok
 ```
 
@@ -64,9 +65,43 @@ Then go to any of the nodes and run:
 
 ```
 > nkbase_admin:cluster_plan().
+=============================== Staged Changes ================================
+Action         Details(s)
+-------------------------------------------------------------------------------
+join           'dev2@127.0.0.1'
+join           'dev3@127.0.0.1'
+join           'dev4@127.0.0.1'
+join           'dev5@127.0.0.1'
+-------------------------------------------------------------------------------
+
+
+NOTE: Applying these changes will result in 1 cluster transition
+
+###############################################################################
+                         After cluster transition 1/1
+###############################################################################
+
+================================= Membership ==================================
+Status     Ring    Pending    Node
+-------------------------------------------------------------------------------
+valid     100.0%     25.0%    'dev1@127.0.0.1'
+valid       0.0%     25.0%    'dev2@127.0.0.1'
+valid       0.0%     25.0%    'dev3@127.0.0.1'
+valid       0.0%     12.5%    'dev4@127.0.0.1'
+valid       0.0%     12.5%    'dev5@127.0.0.1'
+-------------------------------------------------------------------------------
+Valid:5 / Leaving:0 / Exiting:0 / Joining:0 / Down:0
+
+Transfers resulting from cluster changes: 6
+  1 transfers from 'dev1@127.0.0.1' to 'dev5@127.0.0.1'
+  1 transfers from 'dev1@127.0.0.1' to 'dev4@127.0.0.1'
+  2 transfers from 'dev1@127.0.0.1' to 'dev3@127.0.0.1'
+  2 transfers from 'dev1@127.0.0.1' to 'dev2@127.0.0.1'
+
 ok
 
 > nkbase_admin:cluster_commit().
+Cluster changes committed
 ok
 ```
 
