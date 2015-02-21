@@ -39,7 +39,7 @@ You can use `nkbase_admin:leave/0,1` to instruct the cluster to abandon a curren
 ## View cluster information
 
 At any moment, you can call `nkbase_admin:print_info/0` to show in screen a summary of all the cluster related information:
-```erlang
+```
 > nkbase_admin:print_info().
 ==================================================================
 UP services: [nkbase]
