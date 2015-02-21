@@ -99,7 +99,10 @@ Transfers resulting from cluster changes: 6
   2 transfers from 'dev1@127.0.0.1' to 'dev2@127.0.0.1'
 
 ok
+```
+and
 
+```
 > nkbase_admin:cluster_commit().
 Cluster changes committed
 ok
