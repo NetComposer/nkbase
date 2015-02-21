@@ -7,7 +7,7 @@ all: deps compile
 compile:
 	./rebar compile
 
-compile-quick:
+compile-no-deps:
 	./rebar compile skip_deps=true
 
 deps:
