@@ -2,20 +2,20 @@
 
 NkBASE includes a simple but flexible search engine that can be used in the three supported modes (eventual consistency, self-convergent and strong consistency).
 
-When storing an object, you can supply any number of indices, each of them with a single o multiple values. This indices are stored with the object at each vnode. If the object is updated with different indices, the old ones are removed. If the object is deleted, indices are also deleted.
+When storing an object, you can supply any number of indices, each of them with a single o multiple values. This indices are stored along the object at each vnode. If the object is updated with different indices, the old ones are removed. If the object is deleted, indices are also deleted.
 
 Later on, you can perform simple or quite complex query operations over these indices.
 
-[Adding Indices](#adding-indices)
-[Simple queries](#simple-queries)
-[Text queries](#text-queries)
-[Get Specification](#get-specification)
-[Complex queries](#complex-queries)
+* [Adding Indices](#adding-indices)
+* [Simple queries](#simple-queries)
+* [Text queries](#simple-text-queries)
+* [Get Specification](#get-specification)
+* [Complex queries](#complex-queries)
 
 
 ## Adding indices
 
-You can add any number of indices to an object using the `indices` option when calling `nkbase:put/4,5`, `nkase_dmap:update/4,5´ or `nkbase_sc:kput/4,5`.
+You can add any number of indices to an object using the `indices` option when calling [`nkbase:put/4,5`](eventually_consistent.md#write-operation), [`nkase_dmap:update/4,5`](self_convergent.md#write-operation) or [`nkbase_sc:kput/4,5`](strong_consistency.md#write-operation).
 
 The specification for it is `#{indices => [nkbase:index_spec()]}`:
 
@@ -35,11 +35,11 @@ The specification for it is `#{indices => [nkbase:index_spec()]}`:
 	normalize | words.
 ```
 
-You can associate with any index_name() a single erlang value, or a list of values. In the second case, searching over any of the will find the object. You can also use the `{func, fun/2}` option, and NkBASE will call this function before saving the object, that must return the index value or values.
+You can associate with any _index_name_ a single erlang value, or a list of values. In the second case, searching over any of the will find the object. You can also use the `{func, fun/2}` option, and NkBASE will call this function before saving the object, that must return the index value or values.
 
-You cas use the `key` option to use the key of the object as the index value.
+You can use the `key` option to use the key of the object as the index value.
 
-If the stored object is an Erlang `map()` or `proplist()`, you can use the `{field, Field::term()|tuple()}` form, where must a field of the map or list of tuples. If Field is a tuple, it is used to find nested fields in maps or list of tuples.
+If the stored object is an Erlang `map()` or `proplist()`, you can use the `{field, Field::term()|tuple()}` form, where _Field_ must a field of the map or list of tuples. If Field is a tuple, it is used to find nested fields in maps or list of tuples.
 
 If you use the `normalize` option, NkBASE will normalize the index value, converting it to lowercase and replacing non-standard _utf8_ and _latin1_ characters to their ASCII simple equivalents. If you use the `words` option, NkBASE will split the index value on spaces, generating a new index value for each word.
 
@@ -53,7 +53,7 @@ Consider the following index specification:
 		indices => 
 			[
 				{i_1, key},
-				{i_2, <<"my index"},
+				{i_2, <<"my index">>},
 				{i_3, {field, field_1}, [normalize, words]},
 				{i_4, {field, {field_2, field_22}}}
 			]
@@ -69,22 +69,22 @@ Then, if you store the following object:
 	}).
 ```
 
-Would associate the following indices with the object:
+It would associate the following indices with the object:
 ```erlang
 [
 	{i_1, [my_key]},
 	{i_2, [<<"my index">>],
-	{i_3, [<<"word1">>, <<"word2"]},
-	{i_4, [<<"Word3 Word4"]}
+	{i_3, [<<"word1">>, <<"word2">>]},
+	{i_4, [<<"Word3 Word4">>]}
 ]
 ```
 
-It would have been the same for the followig object:
+It would have been the same if using a `proplist()` object instead of a `map()` object:
 
 ```erlang
 > nkbase:put(domain, class, my_key, 
 	[
-		{field1, <<"Word1 Wórd2"},
+		{field1, <<"Word1 Wórd2">>},
 		{field2, [{field22, <<"Word3 Word4">>}]}
 	])
 ```
@@ -129,7 +129,7 @@ nkbase:search(domain, class, {index1, {ge, 123}}).
 {ok, [...]}
 ```
 
-will find all objects with an _index1_ index with value greater or equal than 123. Since you can use any erlang term for index values, normal Erlang sort order is applied here. For each found object, a tuple of three elements is returned: the found value, the object's key and the returned info about the object (by default `[]`). The returned data is always a list because there could be several conflicting objects under this key. The results are sorted over the index value.
+will find all objects with an _index1_ index with value greater or equal than 123. Since you can use any erlang term for index values, normal Erlang sort order is applied here. For each found object, a tuple of three elements is returned: the found value, the object's key and the returned info about the object (by default `[]`). The results are sorted over the index value.
 
 The available filters are:
 
@@ -138,25 +138,25 @@ Filter|Description
 all|Matches any object (having this index)
 {eq, Value}|Matches only this specific value as index value
 {ne, Value}|Matches objects not having this value as index value
-{lt, Value}|Matches if have a lower value
-{le, Value}|Matches if have a lower or equal value
-{gt, Value}|Matches if have a higher value
-{ge, Value}|Matches if have a higher or equal value
+{lt, Value}|Matches if it has a lower value
+{le, Value}|Matches if it has a lower or equal value
+{gt, Value}|Matches if it has a higher value
+{ge, Value}|Matches if it has a higher or equal value
 {range, Value1, Value2}|Matches with index value >= Value1 and =< Value2
 {re, Re}|Applies a regular expression to the object value (must be a `binary()` or `string())
 
-Except for the regular expression filter, all of the rest are very fast, since indices are stored sorted on all backends and NkBASE can go directly to the first value matching the filter. 
+Except for the regular expression filter, all of the rest are very fast, since indices are stored already sorted on all backends and NkBASE can go directly to the first value matching the filter. 
 
-You can use the `page_size` option to limit the number of results. If you want more results, you can launch a new query using the `next` option and selecting the the first value and key you want to find. You can also find in reverse using `order` option.
+You can use the `page_size` option to limit the number of results. If you want more results, you can launch a new query using the `next` option and selecting the the first value and key you want to find. You can also find in reverse order using the `order` option.
 
 
 ## Get specification
 
-By default, `nkbase:search/3,4` will only return the foud value, the key and an empty list. You can use the same [get specification](eventually_consistent.md#get-specification) defined for _gets_ to order it to return specific fields or index values from the found object.
+By default, `nkbase:search/3,4` will only return the found index value, the key and an empty list. You can use the same [get specification](eventually_consistent.md#get-specification) defined for _gets_ in order to get specific fields or index values from the found object.
 
-When using this option, NkBASE will always return a list of maps, because there could be several different values stored under this key. NkBASE will only return the fields of the objects that match the query.
+When using this option, NkBASE will always return a list of maps, because there could be several different objects stored under this key (in case of conflict). NkBASE will only return a map for each objects that match the query.
 
-However, if you order to reply specific fields or index values, NkBASE must read the full object for each matching key, so it will be slower.
+Keep in mind thatm if you order to reply specific fields or index values, NkBASE must read the full object for each matching key, so it will be slower.
 
 
 ## Simple text queries
@@ -170,7 +170,7 @@ nkbase:search(domain, class, {index1, "header*"})
 
 will find all objects with an _index1_ value that is a binary starting with `<<"header">>`. The available options and their equivalents are described here:
 
-Text mode|Filter
+Text mode|Filter equivalent
 ---|---
 "*"|all
 "header *"|{range, <<"header">>, <<"header", 255>>}
@@ -206,6 +206,8 @@ nkbase:search(domain, class, [{index1, [{eq, 1}, {eq, 10}]}, {index2, {eq, <<"go
 ```
 
 wil find objects having an index1 with value 1 or 10 and an index2 with value <<"good">>. The resulting list will be sorted over the first index.
+
+With this tools, you can launch very complex query operations over multiple indices.
 
 For this king of queries, NkBASE iterates over the first index, and, for the objects mathing the first index, must read the full object from disk and check if the rest of indices also match, so it can be quite slow.
 
