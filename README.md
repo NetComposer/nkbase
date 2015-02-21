@@ -12,9 +12,9 @@ NkBASE has a clean code base, and can be used as a starting point to learn how t
 
 
 ## Features
-* Highly available, allowing read and write operation even in case of node faillures.
-* Operation friendly. Nodes can be added and removed nodes on the fly.
-* Scable from three to hundreds of nodes.
+* Highly available, allowing read and write operation even in case of node failures.
+* Operation friendly. Nodes can be added and removed on the fly.
+* Scalable from three to hundreds of nodes.
 * Disk (leveldb) and memory (ets) backends.
 * Three simultaneous operation modes:
 	* Eventually consistent mode using Dotted Version Vectors.
