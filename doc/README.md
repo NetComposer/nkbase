@@ -1,4 +1,4 @@
-# Welcome to NkSIP Documentation
+# Welcome to NkBASE Documentation
 
 * [Introduction and Concepts](concepts.md)<br/>
 * [Eventually consistent mode](eventually_consistent.md)<br/>
