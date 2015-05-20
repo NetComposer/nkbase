@@ -81,6 +81,7 @@ n|`1..5`|3|Number of copies of the stored object
 r|`1..5`|3|Number of nodes to take into account for the read operations
 reconcile|`nkbase:reconcile()`|`undefined`|See bellow
 timeout|`integer()`|`30`|Time to wait for the write operation
+get_values|`[boolean()]`|`false`|Receive full object
 get_fields|`[term()|tuple()]`|`undefined`|Receive these fields instead of the full object
 get_indices|`[nkbase:index_name()]`|`undefined`|Receive these indices instead of the full object
 
