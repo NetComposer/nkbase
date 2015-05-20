@@ -119,6 +119,7 @@ timeout|`integer()`|`30`|Time to wait for the write operation
 order|`asc|desc`|`asc`|Ascending or descending
 page_size|`integer()`|`1000`|Number of objects to return
 next|`{term(), nkbase:key()}`|`undefined`|Continue the search at this point
+get_values|`boolean()`|`false`|Receive the full object
 get_fields|`[term()|tuple()]`|`undefined`|Receive these fields instead of the full object
 get_indices|`[nkbase:index_name()]`|`undefined`|Receive these indices instead of the full object
 
