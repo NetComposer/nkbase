@@ -279,6 +279,7 @@
 		order => asc | desc,
 		page_size => pos_integer(),
 		next => {term(), key()},
+		get_values => boolean(),
 		get_fields => [term() | tuple()],
 		get_indices => [index_name()]
 	}.

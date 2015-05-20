@@ -30,7 +30,7 @@
 -export([start_link/0]).
 
 -include("nkbase.hrl").
--include("../deps/riak_ensemble/include/riak_ensemble_types.hrl").
+-include_lib("riak_ensemble/include/riak_ensemble_types.hrl").
 
 
 %% ===================================================================
