@@ -13,8 +13,6 @@
 -define(ERL_LOW, -1.0e99).
 -define(ERL_HIGH, <<255>>).
 
-
-
 -record(fold_spec, {
 	backend  :: nkbase:backend(),
 	domain = '$nk_all' :: '$nk_all' | nkbase:domain(),
@@ -49,7 +47,6 @@
 	db_ref :: nkbase_backend:db_ref(),
 	keyfilter :: undefined | fun((nkbase:ext_key()) -> boolean())
 }).
-
 
 -record(nk_ens, {
 	eseq :: nkbase_sc:eseq(),

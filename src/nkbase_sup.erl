@@ -24,8 +24,8 @@
 -behaviour(supervisor).
 
 -export([start_link/0, init/1]).
--export([start_nkbase_vnode_get_fsm_sup/0, start_nkbase_vnode_put_fsm_sup/0]).
--export([start_nkbase_coverage_fsm_sup/0]).
+-export([start_vnode_get_fsm_sup/0, start_vnode_put_fsm_sup/0]).
+-export([start_coverage_fsm_sup/0]).
 -export([start_nkbase_searchs_sup/0, start_nkbase_lists_sup/0]).
 
 
@@ -35,20 +35,20 @@
 
 start_link() ->
     Childs = [
-		{nkbase_vnode_get_get_fsm_sup, 
-			{?MODULE, start_nkbase_vnode_get_fsm_sup, []},
+		{nkbase_vnode_get_fsm_sup, 
+			{?MODULE, start_vnode_get_fsm_sup, []},
 			permanent,
 			infinity,
 			supervisor,
 			[?MODULE]},	
 		{nkbase_vnode_put_fsm_sup, 
-			{?MODULE, start_nkbase_vnode_put_fsm_sup, []},
+			{?MODULE, start_vnode_put_fsm_sup, []},
 			permanent,
 			infinity,
 			supervisor,
 			[?MODULE]},	
 		{nkbase_coverage_fsm_sup, 
-			{?MODULE, start_nkbase_coverage_fsm_sup, []},
+			{?MODULE, start_coverage_fsm_sup, []},
 			permanent,
 			infinity,
 			supervisor,
@@ -84,7 +84,7 @@ start_link() ->
 init(ChildSpecs) ->
     {ok, ChildSpecs}.
 
-start_nkbase_vnode_get_fsm_sup() ->
+start_vnode_get_fsm_sup() ->
 	supervisor:start_link({local, nkbase_vnode_get_fsm_sup}, ?MODULE, 
 		{{simple_one_for_one, 3, 60}, [
 			{undefined,
@@ -95,7 +95,7 @@ start_nkbase_vnode_get_fsm_sup() ->
 				[nkbase_vnode_get_fsm]
 		}]}).
 
-start_nkbase_vnode_put_fsm_sup() ->
+start_vnode_put_fsm_sup() ->
 	supervisor:start_link({local, nkbase_vnode_put_fsm_sup}, ?MODULE, 
 		{{simple_one_for_one, 3, 60}, [
 			{undefined,
@@ -106,7 +106,7 @@ start_nkbase_vnode_put_fsm_sup() ->
 				[nkbase_vnode_put_fsm]
 		}]}).
 
-start_nkbase_coverage_fsm_sup() ->
+start_coverage_fsm_sup() ->
 	supervisor:start_link({local, nkbase_coverage_fsm_sup}, ?MODULE, 
 		{{simple_one_for_one, 3, 60}, [
 			{undefined,

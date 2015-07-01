@@ -12,7 +12,7 @@ compile-no-deps:
 
 deps:
 	./rebar get-deps
-	util/fix_deps_warnings_as_errors.sh
+	# util/fix_deps_warnings_as_errors.sh
 
 clean: 
 	./rebar clean

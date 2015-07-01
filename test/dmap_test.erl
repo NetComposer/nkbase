@@ -76,7 +76,7 @@ update(Meta) ->
 	% If we try to remove a flag without precondition context, we can get an error
 	ok = nkbase_dmap:update(D, C, K, [{f1, {assign, a}}], Meta),
 	% 'f1' is a record, not a flag
-	{error, {field_not_present, f1}} = 
+	{error, {field_not_present, {f1, _}}} = 
 		nkbase_dmap:update(D, C, K, [{f1, remove_flag}], Meta),
 
 	% We get the precondition context (like saying, yeah, I know)
