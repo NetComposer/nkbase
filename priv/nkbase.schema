@@ -1,0 +1,39 @@
+%% @doc Backends to start
+{mapping, "nkbase.backends", "nkbase.backends", [
+    {default, leveldb},
+    {datatype, {enum, [leveldb]}},
+    hidden
+]}.
+
+%% @doc Expire resolution time for NkBASE
+{mapping, "nkbase.expire_resolution", "nkbase.expire_resolution", [
+    {datatype, {duration, ms}},
+    {default, "1s"}
+]}.
+
+
+%% @doc Expire check time for NkBASE
+{mapping, "nkbase.expire_check", "nkbase.expire_check", [
+    {datatype, {duration, s}},
+    {default, "60s"}
+]}.
+
+
+%% @doc Number of workers for NkBASE
+{mapping, "nkbase.workers", "nkbase.vnode_workers", [
+    {datatype, integer},
+    {default, 10}
+]}.
+
+
+%% @doc Max number of open files for NkBASE leveldb backend
+{mapping, "nkbase.max_open_files", "nkbase.leveldb_opts.max_open_files", [
+    {datatype, integer},
+    {default, 100},
+    {validators, ["max_open_files"]}
+]}.
+
+
+{validator, "max_open_files", "Must be lower than 65536",
+    fun(Num) -> Num>0 andalso Num<65536 end}.
+
