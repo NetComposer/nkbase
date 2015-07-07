@@ -73,13 +73,13 @@ start_vnode(I) ->
 init([Idx]) ->
 	Pos = nkbase_util:idx2pos(Idx),
 	EtsRef = ets:new(store, [ordered_set, public]),
-	Backends = nkbase_app:get_env(backends, []),
-	case lists:member(leveldb, Backends) of
+	case nkbase_app:get_env(leveldb, true) of
 		true ->
 			Path = leveldb_path(Pos),
 			{ok, LevelRef} = nkbase_backend:leveldb_open(Path);
 		false ->
-			Path = <<>>, LevelRef = undefined
+			Path = <<>>, 
+			LevelRef = undefined
 	end,
 	ExpireCheck = nkbase_app:get_env(expire_check, 60),
 	ExpireResolution = nkbase_app:get_env(expire_resolution, 1000),

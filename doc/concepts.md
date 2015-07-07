@@ -28,7 +28,7 @@ For each _backend_, you can store any Erlang object uniquely identified by a _Do
 To retrieve any object, you must know its Domain, Class and Key. NkBASE allows to perform several operations on all of the objects having a specific Domain and Class, like listing keys, searching or reindexing.
 
 NkBASE supports currently two different backends:
-* **LevelDB**: persistent store based on Basho version of Google's LevelDB. This is the default backend.
+* **LevelDB**: persistent store based on Basho version of Google's LevelDB. This is the default backend, and can be deactivated using the {leveldb, false} config option.
 * **Ets**: non-persistent memory based store, based on Erlang ETS tables
 
 Most operations can be performed on any backend. However, the strong consistency subsystems can only use leveldb, since it needs a persistent backend.

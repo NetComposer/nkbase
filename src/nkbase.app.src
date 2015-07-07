@@ -6,11 +6,10 @@
 	{mod, {nkbase_app, []}},
 	{applications, [kernel, stdlib, crypto, sasl, lager, cluster_info, eleveldb, riak_core]},
 	{env, [
-		{backends, [ets, leveldb]},		% Start this backends
-										% Supported: ets, leveldb
 		{expire_resolution, 1000},		% Expiration timers resolution (msecs)
 		{expire_check, 60}, 			% Time to check for long expires (secs)
 		{vnode_workers, 10},			% Number of vnode parallel workers
+		{leveldb, true},				% Start LevelDB backend
 		{leveldb_opts, [				% See eleveldb.erl
 			{max_open_files, 100}
 		]}

@@ -16,10 +16,10 @@ The current recognized options are:
 
 Options|Type|Default|Description
 ---|---|---|---
-backends|`[nkbase:backend()]`|`[ets, leveldb]`|Backends to activate. Available backends are ets and leveldb
 expire_resolution|`integer()`|`1000`|Resolution for auto-expiration of timers in msecs (see [auto-expiration](concepts.md#automatic-expiration))
 expire_check|`integer()`|`60`|Minimum time (in secs) to decide to delay the expiration timers
 vnode_workers|`integer()`|`10`|Number of workers to start at each vnode to process async requests
+leveldb|`boolean()`|`true`|Activates the LevelDB backend
 leveldb_options|`proplist()`|`[{max_open_files, 100}]`|Options for the leveldb backend (see [eleveldb.erl](https://github.com/basho/eleveldb/blob/develop/src/eleveldb.erl) and [Riak configuration options](http://docs.basho.com/riak/latest/ops/advanced/configs/configuration-files/))
 
 
