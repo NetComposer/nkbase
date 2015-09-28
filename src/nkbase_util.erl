@@ -187,19 +187,19 @@ expand_indices(Indices, ExtKey, {'$nkmap', BinMap}) ->
 	expand_indices(Indices, ExtKey, DMap);
 
 expand_indices(Indices, ExtKey, Obj) ->
-	{_Domain, _Class, Key} = ExtKey,
-	expand_indices(Key, Obj, Indices, []).
+	expand_indices(ExtKey, Obj, Indices, []).
 
 
 %% @private
--spec expand_indices(nkbase:key(), nkbase:obj(), [nkbase:index_spec()], 
+-spec expand_indices(nkbase:ext_key(), nkbase:obj(), [nkbase:index_spec()], 
 				     [{term(), term()}]) ->
 	[{term(), term()}].
 
-expand_indices(_Key, _Data, [], Acc) ->
+expand_indices(_ExtKey, _Data, [], Acc) ->
 	lists:usort(Acc);
 
-expand_indices(Key, Data, [{Index, Spec, Opts}|Rest], Acc) ->
+expand_indices(ExtKey, Data, [{Index, Spec, Opts}|Rest], Acc) ->
+	{_Domain, _Class, Key} = ExtKey,
 	Values1 = case Spec of
 		key ->
 			Key;
@@ -210,7 +210,7 @@ expand_indices(Key, Data, [{Index, Spec, Opts}|Rest], Acc) ->
 		{field, _Field} ->
 			[];
 		{func, Fun} ->
-			Fun(Data);
+			Fun(ExtKey, Data);
 		Term ->
 			Term
 	end,
@@ -233,10 +233,10 @@ expand_indices(Key, Data, [{Index, Spec, Opts}|Rest], Acc) ->
 		false -> Values3
 	end,
 	Indices = [{Index, V} || V<-Values4],
-	expand_indices(Key, Data, Rest, Acc++Indices);
+	expand_indices(ExtKey, Data, Rest, Acc++Indices);
 
-expand_indices(Key, Data, [{Index, Spec}|Rest], Acc) ->
-	expand_indices(Key, Data, [{Index, Spec, []}|Rest], Acc).
+expand_indices(ExtKey, Data, [{Index, Spec}|Rest], Acc) ->
+	expand_indices(ExtKey, Data, [{Index, Spec, []}|Rest], Acc).
 
 
 %% @doc Performs a reconcile over a serie of values
@@ -657,10 +657,10 @@ index_test() ->
 		{i19, {field, field7}},
 		{i20, my_i20, [normalize]},
 		{i21, my_i21},
-		{i22, {func, fun test_func1/1}},
-		{i23, {func, fun test_func1/1}, [normalize]},
-		{i24, {func, fun test_func2/1}},
-		{i25, {func, fun test_func2/1}, [normalize]},
+		{i22, {func, fun test_func1/2}},
+		{i23, {func, fun test_func1/2}, [normalize]},
+		{i24, {func, fun test_func2/2}},
+		{i25, {func, fun test_func2/2}, [normalize]},
 		{i26, {field, field8}},
 		{i27, {field, field8}, [normalize]},
 		{i28, {field, field8}, [normalize, words]},
@@ -724,14 +724,14 @@ index_test() ->
 	] = expand_indices(S1, K, other_thing),
 	ok.
 
-test_func1(Map) when is_map(Map) -> maps:get(field1, Map);
-test_func1(List) when is_list(List) -> get_value(field1, List);
-test_func1(_) -> [].
+test_func1(_, Map) when is_map(Map) -> maps:get(field1, Map);
+test_func1(_, List) when is_list(List) -> get_value(field1, List);
+test_func1(_, _) -> [].
 
 
-test_func2(Map) when is_map(Map) -> maps:get(field7, Map);
-test_func2(List) when is_list(List) -> get_value(field7, List);
-test_func2(_) -> [].
+test_func2(_, Map) when is_map(Map) -> maps:get(field7, Map);
+test_func2(_, List) when is_list(List) -> get_value(field7, List);
+test_func2(_, _) -> [].
 
 
 -endif.
