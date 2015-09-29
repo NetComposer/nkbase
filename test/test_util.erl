@@ -27,15 +27,15 @@
 
 
 start() ->
-	ok = filelib:ensure_dir("data/ring/"),
-	nkbase_app:start(),
-    riak_core:wait_for_service(nkbase).
+	nkdist_util:ensure_dir(),
+	application:start(riak_core),
+	nkbase_app:start().
 
 
 stop() ->
 	application:stop(nkbase),
-	application:stop(riak_core).
-
+	application:stop(riak_core),
+	ok.
 
 get_name() ->
 	Pos1 = crypto:rand_uniform(1,201),

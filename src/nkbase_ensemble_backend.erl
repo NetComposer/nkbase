@@ -59,7 +59,7 @@ init(Ensemble, Id, []) ->
     {nkv, EnsIdx, N} = Ensemble,
     {{nkv, EnsIdx, N, Idx}, _Node} = Id,
     lager:notice("Started ensemble ~p (n=~p) peer ~p (~p)", 
-                  [nkbase_util:idx2pos(EnsIdx), N, nkbase_util:idx2pos(Idx), self()]),
+                  [nkdist_util:idx2pos(EnsIdx), N, nkdist_util:idx2pos(Idx), self()]),
     Proxy = riak_core_vnode_proxy:reg_name(nkbase_vnode, Idx),
     ProxyRef = erlang:monitor(process, Proxy),
     {ok, Vnode} = riak_core_vnode_manager:get_vnode_pid(Idx, nkbase_vnode),
@@ -67,7 +67,7 @@ init(Ensemble, Id, []) ->
     #state{
         ensemble = Ensemble,
         id = Id,
-        pos = nkbase_util:idx2pos(Idx),
+        pos = nkdist_util:idx2pos(Idx),
         proxy = Proxy,
         proxy_mon = ProxyRef,
         vnode_mon = VnodeRef
@@ -175,7 +175,7 @@ tick(_Epoch, _Seq, _Leader, Views, State) ->
                                 ok ->
                                     lager:warning("Executed Ensemble Changes at ~p: ~p", 
                                         [State#state.pos, 
-                                          [{Type, nkbase_util:idx2pos(Idx), Node} ||
+                                          [{Type, nkdist_util:idx2pos(Idx), Node} ||
                                            {Type, {{nkv, _, _, Idx}, Node}} <- Changes]]);
                                 _ ->
                                     erro
@@ -207,7 +207,7 @@ handle_down(Ref, _Pid, Reason, #state{vnode_mon=Ref}=State) ->
             ok;
         _ -> 
             lager:warning("Ensemble Backend ~p (~p): vnode crashed with reason: ~p", 
-                          [nkbase_util:idx2pos(EnsIdx), Pos, Reason])
+                          [nkdist_util:idx2pos(EnsIdx), Pos, Reason])
     end,
     %% There are some races here (see riak_kv_ensemble_backend)
     {ok, Vnode} = riak_core_vnode_manager:get_vnode_pid(Idx, nkbase_vnode),
@@ -227,7 +227,7 @@ handle_down(Ref, _Pid, Reason, #state{proxy_mon=Ref}=State) ->
             ok;
         _ ->
             lager:warning("Ensemble Backend ~p (~p): vnode proxy crashed with reason: ~p", 
-                          [nkbase_util:idx2pos(EnsIdx), Pos, Reason])
+                          [nkdist_util:idx2pos(EnsIdx), Pos, Reason])
     end,
     % If the new proxy has not yet registered, a new 'DOWN' will be received
     ProxyRef2 = erlang:monitor(process, Proxy),

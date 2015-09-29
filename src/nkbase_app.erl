@@ -31,11 +31,8 @@
 
 %% @doc Manual start
 start() ->
-	application:load(riak_core),
-	{ok, DataDir} = application:get_env(riak_core, platform_data_dir),
-	RingFile = filename:join([DataDir, "ring", "dummy"]),
-	filelib:ensure_dir(RingFile),
-	nkbase_util:ensure_all_started(nkbase, temporary), 
+	nkdist_util:ensure_dir(),
+    {ok, _} = nklib_util:ensure_all_started(nkbase, temporary),
     riak_core:wait_for_service(nkbase),
 	ok.
 
@@ -45,7 +42,6 @@ start(_Type, _Args) ->
 	case nkbase_sup:start_link() of
 		{ok, Pid} ->
 			riak_core:register(nkbase, [{vnode_module, nkbase_vnode}]),
-			nkbase_util:store_idx_cache(),
 			{ok, Vsn} = application:get_key(vsn),
 			lager:info("NkBASE (version ~s) has started", [Vsn]),
 			ExpireCheck = nkbase_app:get_env(expire_check, 60),

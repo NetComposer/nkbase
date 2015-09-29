@@ -76,9 +76,9 @@
 %% Object metadata
 -type obj_meta() :: 
 	#{
-		time => nkbase_util:l_timestamp(),
+		time => nklib_util:l_timestamp(),
 		idx => [{index_name(), term()}],
-		exp => nkbase_util:l_timestamp(),
+		exp => nklib_util:l_timestamp(),
 		eseq => nkbase_sc:eseq()
 	}.
 

@@ -125,7 +125,7 @@ prepare(timeout, #state{chash_key=CHashKey, n=N, w=W}=State) ->
 		AnnPreflist ->
 			%% Annotated preflist, having the type (primary or fallbackº)
 			lager:debug("PUT preflist: ~p", [
-				[{nkbase_util:idx2pos(Idx), Node, Type} ||
+				[{nkdist_util:idx2pos(Idx), Node, Type} ||
 				{{Idx, Node}, Type} <- AnnPreflist]
 			]),
 			Preflist = [{Idx, Node} || {{Idx, Node}, _} <- AnnPreflist],
@@ -144,7 +144,7 @@ prepare(timeout, #state{chash_key=CHashKey, n=N, w=W}=State) ->
             	false ->
                     %% This node is not in the preference list
                     %% forward on to a random node
-                    Pos = nkbase_util:l_timestamp() rem length(Preflist),
+                    Pos = nklib_util:l_timestamp() rem length(Preflist),
                     {_Idx, CoordNode} = lists:nth(Pos+1, Preflist),
                     proc_lib:spawn(CoordNode, supervisor, start_child,
                     			   [nkbase_vnode_put_fsm_sup, [State]]),
@@ -166,7 +166,7 @@ execute(timeout, State) ->
 		ext_obj = ExtObj,
 		timeout = Timeout
 	} = State,
-	lager:debug("PUT Execute to ~p, ~p", [nkbase_util:idx2pos(Idx), Node]),
+	lager:debug("PUT Execute to ~p, ~p", [nkdist_util:idx2pos(Idx), Node]),
     riak_core_vnode_master:command(
 		{Idx, Node},
 		{put_coord, ExtKey, ExtObj, Meta},

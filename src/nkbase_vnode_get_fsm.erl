@@ -126,7 +126,7 @@ prepare(timeout, #state{chash_key=CHashKey, n=N, r=R}=State) ->
 			{stop, normal, State1};
 		AnnPreflist ->
 			lager:debug("GET preflist: ~p", [
-				[{nkbase_util:idx2pos(Idx), Node, Type} ||
+				[{nkdist_util:idx2pos(Idx), Node, Type} ||
 				{{Idx, Node}, Type} <- AnnPreflist]
 			]),
 			Preflist = [{Idx, Node} || {{Idx, Node}, _} <- AnnPreflist],
@@ -222,7 +222,7 @@ execute_repair(DVV, State) ->
 			{stop, normal, State};
 		_ ->
 			lager:notice("Sending Read Repair to vnodes: ~p", 
-				[[{nkbase_util:idx2pos(Idx), Node} || {Idx, Node} <- Updates]]),
+				[[{nkdist_util:idx2pos(Idx), Node} || {Idx, Node} <- Updates]]),
 			riak_core_vnode_master:command(
 				Updates,
 				{put, ExtKey, DVV, Meta},

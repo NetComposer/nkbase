@@ -238,7 +238,7 @@ search(Domain, Class, Meta, Indices) ->
 
 make_ext_obj({Domain, Class, _Key}, '$nkdeleted', Meta) ->
 	Meta1 = nkbase:get_class(Domain, Class, Meta),
-	Now = nkbase_util:l_timestamp(),
+	Now = nklib_util:l_timestamp(),
 	ObjMeta1 = #{time=>Now},
 	ObjMeta2 = case maps:get(ttl, Meta1, ?DEFAULT_DEL_TTL) of
 		undefined -> ObjMeta1;
@@ -248,7 +248,7 @@ make_ext_obj({Domain, Class, _Key}, '$nkdeleted', Meta) ->
 
 make_ext_obj({Domain, Class, _Key}=ExtKey, Obj, Meta) ->
 	Meta1 = nkbase:get_class(Domain, Class, Meta),
-	Now = nkbase_util:l_timestamp(),
+	Now = nklib_util:l_timestamp(),
 	ObjMeta1 = #{time=>Now},
 	ObjMeta2 = case maps:get(indices, Meta1, []) of
 		_ when element(1, Obj)=='$nkupdate' -> 
@@ -278,7 +278,7 @@ make_ext_obj({Domain, Class, _Key}=ExtKey, Obj, Meta) ->
 find_ttl(ExtKey, Meta) ->
 	{ok, List} = nkbase_cmds:search('$nkbase', '$g', Meta, [{exp, [all]}]),
 	case [V || {V, K, []} <- List, K == ExtKey] of
-		[V] -> (V - nkbase_util:l_timestamp()) / 1000000;
+		[V] -> (V - nklib_util:l_timestamp()) / 1000000;
 		[] -> none
 	end.
 

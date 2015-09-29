@@ -7,11 +7,14 @@
 -pa deps/eleveldb/ebin
 -pa deps/exometer_core/ebin
 -pa deps/folsom/ebin
+-pa deps/jsx/ebin
 -pa deps/getopt/ebin
 -pa deps/goldrush/ebin 
 -pa deps/lager/ebin
 -pa deps/meck/ebin
 -pa deps/neotoma/ebin
+-pa deps/nkdist/ebin
+-pa deps/nklib/ebin
 -pa deps/parse_trans/ebin
 -pa deps/pbkdf2/ebin
 -pa deps/poolboy/ebin

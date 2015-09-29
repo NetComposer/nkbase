@@ -55,7 +55,7 @@ start_vnode(I) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VNode Behaviour %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% -type exp_set() :: {nkbase:backend(), nkbase:ext_key(), nkbase_util:timestamp()}.
+% -type exp_set() :: {nkbase:backend(), nkbase:ext_key(), nklib_util:timestamp()}.
 
 -record(state, {
 	idx :: chash:index_as_int(),				% vnode's index
@@ -71,7 +71,7 @@ start_vnode(I) ->
 
 %% @private
 init([Idx]) ->
-	Pos = nkbase_util:idx2pos(Idx),
+	Pos = nkdist_util:idx2pos(Idx),
 	EtsRef = ets:new(store, [ordered_set, public]),
 	case nkbase_app:get_env(leveldb, true) of
 		true ->
@@ -96,7 +96,7 @@ init([Idx]) ->
 		undefined ->
 			ok;
 		_ ->
-			Now = nkbase_util:l_timestamp(),
+			Now = nklib_util:l_timestamp(),
 			del_all_expired(leveldb, Now, State),
 			find_all_expires(leveldb, Now, State)
 	end,
@@ -194,7 +194,7 @@ handle_command({reindex, Backend, ExtKey, Spec}, Sender, State) ->
 	
 handle_command(check_long_expire, ignore, #state{expire_check=ExpCheck}=State) ->
 	% lager:warning("CHECK LONG EXPIRE"),
-	Now = nkbase_util:l_timestamp(),
+	Now = nklib_util:l_timestamp(),
 	% Check up to ExpCheck secs ago
 	del_all_expired(ets, Now-1000000*ExpCheck, State),
 	% Check from now
@@ -366,7 +366,7 @@ handle_handoff_command(Cmd, Sender, State) ->
 %% @private
 handoff_starting({Type, {Idx, Node}}, State) ->
 	lager:info("Handoff (~p) starting at ~p to {~p, ~p}", 
-				[Type, State#state.pos, nkbase_util:idx2pos(Idx), Node]),
+				[Type, State#state.pos, nkdist_util:idx2pos(Idx), Node]),
     {true, State#state{handoff_target={Idx, Node}}}.
 
 
@@ -379,7 +379,7 @@ handoff_cancelled(State) ->
 %% @private
 handoff_finished({Idx, Node}, State) ->
 	lager:info("Handoff finished at ~p to ~p ~p", 
-				[State#state.pos, nkbase_util:idx2pos(Idx), Node]),
+				[State#state.pos, nkdist_util:idx2pos(Idx), Node]),
     {ok, State#state{handoff_target=undefined}}.
 
 
@@ -783,14 +783,14 @@ check_expire(Backend, ExtKey, Indices, State) ->
 		undefined -> 
 			ok;
 		Exp -> 
-			Now = nkbase_util:l_timestamp(),
+			Now = nklib_util:l_timestamp(),
 			update_expire_timer(Backend, ExtKey, Exp, Now, State)
 	end.
 
 
 %% @private 
--spec update_expire_timer(nkbase:backend(), nkbase:ext_key(), nkbase_util:timestamp(),
-				    	  nkbase_util:timestamp(), #state{}) ->
+-spec update_expire_timer(nkbase:backend(), nkbase:ext_key(), nklib_util:timestamp(),
+				    	  nklib_util:timestamp(), #state{}) ->
 	ok.
 
 
@@ -853,7 +853,7 @@ del_expired([ExtKey|Rest], Backend, Slot, State) ->
 
 
 %% @private
--spec find_all_expires(nkbase:backend(), nkbase_util:l_timestamp(), #state{}) ->
+-spec find_all_expires(nkbase:backend(), nklib_util:l_timestamp(), #state{}) ->
 	ok.
 
 find_all_expires(Backend, Now, #state{pos=Pos, expire_check=ExpCheck}=State) ->
@@ -885,7 +885,7 @@ find_all_expires(Backend, Now, #state{pos=Pos, expire_check=ExpCheck}=State) ->
 
 
 %% @private
--spec del_all_expired(nkbase:backend(), nkbase_util:l_timestamp(), #state{}) ->
+-spec del_all_expired(nkbase:backend(), nklib_util:l_timestamp(), #state{}) ->
 	ok.
 
 del_all_expired(Backend, Stop, #state{pos=Pos}=State) ->

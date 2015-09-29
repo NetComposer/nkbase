@@ -4,7 +4,7 @@
 	{modules, []},
 	{registered, []},
 	{mod, {nkbase_app, []}},
-	{applications, [kernel, stdlib, crypto, sasl, lager, cluster_info, eleveldb, riak_core]},
+	{applications, [kernel, stdlib, crypto, sasl, lager, nkdist]},
 	{env, [
 		{expire_resolution, 1000},		% Expiration timers resolution (msecs)
 		{expire_check, 60}, 			% Time to check for long expires (secs)

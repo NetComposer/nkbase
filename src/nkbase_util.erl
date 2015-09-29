@@ -21,41 +21,15 @@
 -module(nkbase_util).
 -author('Carlos Gonzalez <carlosj.gf@gmail.com>').
 
--export([loglevel/1, ensure_all_started/2]).
--export([timestamp/0, l_timestamp/0]).
--export([store_idx_cache/0, idx2pos/0, idx2pos/1, pos2idx/1]).
 -export([normalize/1, words/1]).
 -export([get_spec/2]).
 -export([get_value/2, get_value/3, rflatten_max/2]).
 -export([expand_indices/3, reconcile/3]).
--export([status/0, print_ring_info/0]).
-
--export_type([timestamp/0, l_timestamp/0]).
-
-
-%% ===================================================================
-%% Types
-%% ===================================================================
-
-%% System timestamp
--type timestamp() :: non_neg_integer().
-
-%% Precise timestamp
--type l_timestamp() :: non_neg_integer().
-
 
 
 %% ===================================================================
 %% Public
 %% ===================================================================
-
-
-%% @doc Changes log level for console
--spec loglevel(debug|info|notice|warning|error) ->
-	ok.
-
-loglevel(Level) -> 
-    lager:set_loglevel(lager_console_backend, Level).
 
 
 %% @doc Ensure that an application and all of its transitive
@@ -276,57 +250,6 @@ reconcile(Term, _ExtKey, _DVV) ->
 	{error, {invalid_reconcile, Term}}.
 
 
-
-%% dependencies are started.
--spec ensure_all_started(atom(), permanent|temporary|transient) ->
-	{ok, [atom()]} | {error, term()}.
-
-ensure_all_started(Application, Type) ->
-    case ensure_all_started(Application, Type, []) of
-        {ok, Started} ->
-            {ok, lists:reverse(Started)};
-        {error, Reason, Started} ->
-            [ application:stop(App) || App <- Started ],
-            {error, Reason}
-    end.
-
-
-%% @private
-ensure_all_started(Application, Type, Started) ->
-    case application:start(Application, Type) of
-        ok ->
-            {ok, [Application | Started]};
-        {error, {already_started, Application}} ->
-            {ok, Started};
-        {error, {not_started, Dependency}} ->
-            case ensure_all_started(Dependency, Type, Started) of
-                {ok, NewStarted} ->
-                    ensure_all_started(Application, Type, NewStarted);
-                Error ->
-                    Error
-            end;
-        {error, Reason} ->
-            {error, Reason, Started}
-    end.
-
-
-%% @doc Gets an second-resolution timestamp
--spec timestamp() -> timestamp().
-
-timestamp() ->
-    {N1, N2, _} = os:timestamp(),
-    N1*1000000 + N2.
-
-
-%% @doc Gets an microsecond-resolution timestamp
--spec l_timestamp() -> l_timestamp().
-
-l_timestamp() ->
-    {N1, N2, N3} = os:timestamp(),
-    (N1 * 1000000 + N2) * 1000000 + N3.
-
-
-
 %% @doc Normalizes a value into a lower-case, using only a-z, 0-9 and spaces
 %% All other values are converted into these if possible (Ä->a, é->e, etc.)
 %% Utf8 and Latin-1 encodings are supported
@@ -492,75 +415,62 @@ get_value(Key, List, Default) ->
 	end.
 
 
-%% @private Stored a mapping from (long) IDX numbers to short indices
-store_idx_cache() ->
-	{ok, Ring} = riak_core_ring_manager:get_my_ring(),
-	NumParts = riak_core_ring:num_partitions(Ring),
-	OwnersData = riak_core_ring:all_owners(Ring),
-	%% 0 to NumParts-1
-	Idxs2Pos = lists:zip(
-		lists:seq(0, NumParts-1), 
-		[Idx || {Idx, _N} <- OwnersData]
-	),
-	riak_core_mochiglobal:put(nkbase_idx2pos, Idxs2Pos).
-
-
-%% @doc Converts a (long) Idx to a short pos
-idx2pos() ->
-	'mochiglobal:nkbase_idx2pos':term().
+% %% @doc Converts a (long) Idx to a short pos
+% idx2pos() ->
+% 	'mochiglobal:nkbase_idx2pos':term().
 
 
 
-idx2pos(Idx) ->
-	{Pos, Idx} = lists:keyfind(Idx, 2, idx2pos()),
-	Pos.
+% idx2pos(Idx) ->
+% 	{Pos, Idx} = lists:keyfind(Idx, 2, idx2pos()),
+% 	Pos.
 	
-pos2idx(Num) ->	
-	{Num, Idx} = lists:keyfind(Num, 1, idx2pos()),
-	Idx.
+% pos2idx(Num) ->	
+% 	{Num, Idx} = lists:keyfind(Num, 1, idx2pos()),
+% 	Idx.
 	
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%% Others  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%% Others  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-status() ->
-	[
-		{stats, riak_core_stat:get_stats()},
-		{ring_ready, riak_core_status:ringready()},
-		{all_active_transfers, riak_core_status:all_active_transfers()},
-		{transfers, riak_core_status:transfers()},
-		{vnodes, riak_core_vnode_manager:all_index_pid(nkbase_vnode)}
-	].
+% status() ->
+% 	[
+% 		{stats, riak_core_stat:get_stats()},
+% 		{ring_ready, riak_core_status:ringready()},
+% 		{all_active_transfers, riak_core_status:all_active_transfers()},
+% 		{transfers, riak_core_status:transfers()},
+% 		{vnodes, riak_core_vnode_manager:all_index_pid(nkbase_vnode)}
+% 	].
 
 
 
-print_ring_info() ->
-	{ok, Ring} = riak_core_ring_manager:get_my_ring(),
-	io:format("===============================================================================\n", []),
-	io:format("UP services: ~p\n", [riak_core_node_watcher:services()]),
-	io:format("All members: ~p\n", [riak_core_ring:all_members(Ring)]),
-	io:format("Active members: ~p\n", [riak_core_ring:active_members(Ring)]),
-	io:format("Ready members: ~p\n", [riak_core_ring:ready_members(Ring)]),
-	io:format("------------------------3-- Idx2Num --------------------------------------------\n", []),
-	io:format("~p\n", [riak_core_mochiglobal:get(nkbase_idx2pos)]),
-	OwnersData = riak_core_ring:all_owners(Ring),
-	Owners = [{idx2pos(Idx), Node} || {Idx, Node} <- OwnersData],
-	io:format("--------------------------- Owners --------------------------------------------\n", []),
-	io:format("~p\n", [Owners]),
-	% AllIndexPid = 
-	% 	[{idx2pos(Idx), Pid} ||
-	% 	{Idx, Pid} <- riak_core_vnode_master:all_index_pid(nkserver_vnode)],
-	% io:format("Cache Vnode Index Pid: ~p\n", [lists:keysort(1, AllIndexPid)]),
-	AllVNodes = 
-		[{Srv, idx2pos(Idx), Pid} || 
-		{Srv, Idx, Pid} <- riak_core_vnode_manager:all_vnodes()],
-	io:format("----------------------------- All VNodes --------------------------------------\n", []),
-	io:format("~p\n", [lists:sort(AllVNodes)]),
+% print_ring_info() ->
+% 	{ok, Ring} = riak_core_ring_manager:get_my_ring(),
+% 	io:format("===============================================================================\n", []),
+% 	io:format("UP services: ~p\n", [riak_core_node_watcher:services()]),
+% 	io:format("All members: ~p\n", [riak_core_ring:all_members(Ring)]),
+% 	io:format("Active members: ~p\n", [riak_core_ring:active_members(Ring)]),
+% 	io:format("Ready members: ~p\n", [riak_core_ring:ready_members(Ring)]),
+% 	io:format("------------------------3-- Idx2Num --------------------------------------------\n", []),
+% 	io:format("~p\n", [riak_core_mochiglobal:get(nkbase_idx2pos)]),
+% 	OwnersData = riak_core_ring:all_owners(Ring),
+% 	Owners = [{idx2pos(Idx), Node} || {Idx, Node} <- OwnersData],
+% 	io:format("--------------------------- Owners --------------------------------------------\n", []),
+% 	io:format("~p\n", [Owners]),
+% 	% AllIndexPid = 
+% 	% 	[{idx2pos(Idx), Pid} ||
+% 	% 	{Idx, Pid} <- riak_core_vnode_master:all_index_pid(nkserver_vnode)],
+% 	% io:format("Cache Vnode Index Pid: ~p\n", [lists:keysort(1, AllIndexPid)]),
+% 	AllVNodes = 
+% 		[{Srv, idx2pos(Idx), Pid} || 
+% 		{Srv, Idx, Pid} <- riak_core_vnode_manager:all_vnodes()],
+% 	io:format("----------------------------- All VNodes --------------------------------------\n", []),
+% 	io:format("~p\n", [lists:sort(AllVNodes)]),
 
-	riak_core_console:member_status([]),
-	riak_core_console:ring_status([]),
-	ok.
+% 	riak_core_console:member_status([]),
+% 	riak_core_console:ring_status([]),
+% 	ok.
 
 
 %% ===================================================================

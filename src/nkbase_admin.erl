@@ -65,11 +65,11 @@ print_info() ->
     % io:format("-------------------------- Idx2Num ------------------------------\n", []),
     % io:format("~p\n", [riak_core_mochiglobal:get(nkbase_idx2pos)]),
     OwnersData = riak_core_ring:all_owners(Ring),
-    Owners = [{nkbase_util:idx2pos(Idx), Node} || {Idx, Node} <- OwnersData],
+    Owners = [{nkdist_util:idx2pos(Idx), Node} || {Idx, Node} <- OwnersData],
     io:format("--------------------------- Owners -------------------------------\n", []),
     io:format("~p\n", [Owners]),
     AllVNodes = 
-        [{Srv, nkbase_util:idx2pos(Idx), Pid} || 
+        [{Srv, nkdist_util:idx2pos(Idx), Pid} || 
         {Srv, Idx, Pid} <- riak_core_vnode_manager:all_vnodes()],
     io:format("----------------------------- All VNodes -------------------------\n", []),
     io:format("~p\n", [lists:sort(AllVNodes)]),

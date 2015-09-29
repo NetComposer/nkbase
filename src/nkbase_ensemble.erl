@@ -231,8 +231,8 @@ bootstrap_preflists(Ring, CHBin) ->
             R = riak_ensemble_manager:create_ensemble(Ensemble, undefined, Peers,
                                                       nkbase_ensemble_backend, []),
             lager:debug("Adding peers to ensemble ~p, (n=~p): ~p (~p)", 
-                          [nkbase_util:idx2pos(EnsIdx), N, 
-                          [{nkbase_util:idx2pos(Idx), Node} ||
+                          [nkdist_util:idx2pos(EnsIdx), N, 
+                          [{nkdist_util:idx2pos(Idx), Node} ||
                            {{nkv, _, _, Idx}, Node} <-Peers], R])
         end,
         Need).
