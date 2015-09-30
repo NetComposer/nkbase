@@ -23,20 +23,35 @@
 -author('Carlos Gonzalez <carlosj.gf@gmail.com>').
 -behaviour(application).
 
--export([start/0, start/2, stop/1]).
+-export([start/0, start/1, start/2, stop/1]).
 -export([get_env/1, get_env/2, set_env/2, get_dir/0]).
 
 -include("nkbase.hrl").
 
 
-%% @doc Manual start
+%% @doc Starts NkBASE stand alone.
+-spec start() -> 
+    ok | {error, Reason::term()}.
+
 start() ->
-	nkdist_util:ensure_dir(),
-    {ok, _} = nklib_util:ensure_all_started(nkbase, temporary),
-    riak_core:wait_for_service(nkbase),
-	ok.
+    start(temporary).
 
 
+%% @doc Starts NkBASE stand alone.
+-spec start(permanent|transient|temporary) -> 
+    ok | {error, Reason::term()}.
+
+start(Type) ->
+    nkdist_util:ensure_dir(),
+    case nklib_util:ensure_all_started(nkbase, Type) of
+        {ok, _Started} ->
+		    riak_core:wait_for_service(nkbase),
+            ok;
+        Error ->
+            Error
+    end.
+
+   
 %% @doc OTP callback
 start(_Type, _Args) ->
 	case nkbase_sup:start_link() of
