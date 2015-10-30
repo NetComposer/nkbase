@@ -13,8 +13,9 @@ compile-no-deps:
 
 deps:
 	./rebar get-deps
-	# util/fix_deps_warnings_as_errors.sh
-
+	find deps -name "rebar.config" | xargs perl -pi -e 's/lager, "2.0.3"/lager, ".*"/g'
+	(cd deps/lager && git checkout 2.1.1)
+	
 clean: 
 	./rebar clean
 
