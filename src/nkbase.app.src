@@ -1,6 +1,6 @@
 {application, nkbase, [
    	{description, "NkBASE"},
-	{vsn, "develop"},
+	{vsn, "master"},
 	{modules, []},
 	{registered, []},
 	{mod, {nkbase_app, []}},
