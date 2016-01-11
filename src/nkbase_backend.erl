@@ -493,9 +493,6 @@ search(Spec) ->
 
 
 %% @private
-%% If we are not reading values from disk, we cannot check if the index 
-
-
 -spec do_search_find(#search_spec{}, nkbase:ext_key(), term(), 
 					 nkbase_search:ext_search_spec()) ->
 	{true, [nkbase:ext_obj()]} | false.
@@ -520,6 +517,7 @@ do_search_find(Spec, ExtKey, FV, [{_Index, Filters}|Rest]=Indices) ->
 							{true, []}
 					end;
 				{error, Error} ->
+					lager:warning("NkBASE error getting ~p: ~p", [ExtKey, Error]),
 					throw({error, Error})
 			end
 	end.
