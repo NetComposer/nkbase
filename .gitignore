@@ -8,3 +8,5 @@ ebin
 data
 log
 .rebar
+_build
+rebar.lock

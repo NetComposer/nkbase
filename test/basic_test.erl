@@ -136,7 +136,7 @@ bulk_insert(Meta) ->
 	lists:foreach(
 		fun(D) -> nkbase:remove_all({?MODULE, D}, Meta) end,
 		lists:seq(1, ?BULK_DOMAINS)),
-	Start = now(),
+	Start = nklib_util:l_timestamp(),
 	?debugFmt("Inserting ~p records in ~p...", 
 			 [?BULK_DOMAINS*?BULK_CLASSES*?BULK_KEYS, 
 			   maps:get(backend, Meta, ets)]),
@@ -157,7 +157,7 @@ bulk_insert(Meta) ->
 				Classes)
 		end,
 		Domains),
-	Diff = timer:now_diff(now(), Start),
+	Diff = nklib_util:l_timestamp()-Start,
 	?debugFmt("done (~p secs)\n", [Diff/1000000]).
 
 
@@ -254,7 +254,7 @@ put(Meta) ->
 	{ok, []} = nkbase:list_classes(D1, Meta),
 	{ok, []} = nkbase:list_keys(D1, C1, Meta),
 	ok = nkbase:put(D1, C1, K1, object_1, Meta),
-	{ok, L2} = nkbase:list_domains(Meta),
+	{ok, _L2} = nkbase:list_domains(Meta),
 	{ok, [C1]} = nkbase:list_classes(D1, Meta),
 	{ok, [K1]} = nkbase:list_keys(D1, C1, Meta),
 
@@ -284,7 +284,7 @@ put(Meta) ->
 	{ok, _, object_5} = nkbase:get(D1, C1, K1, Meta#{reconcile=>Fun}),
 	% we have already read-repaired:
 	timer:sleep(100),
-	{ok, Ctx5, object_5} = nkbase:get(D1, C1, K1, Meta),
+	{ok, _Ctx5, object_5} = nkbase:get(D1, C1, K1, Meta),
 
 	% Pre-write fun
 	C2 = {c, 2},

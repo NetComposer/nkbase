@@ -112,7 +112,7 @@ bulk_insert(Meta) ->
 			]
 		}),
 	nkbase:remove_all(search_test, search_test, Meta),
-	Start = now(),
+	Start = nklib_util:l_timestamp(),
 	?debugFmt("Inserting ~p records in ~p...", [?RECORDS, maps:get(backend, Meta, ets)]),
 	lists:foreach(
 		fun(Pos) ->
@@ -130,7 +130,7 @@ bulk_insert(Meta) ->
 			ok = nkbase:put(search_test, search_test, {k, Pos}, Obj, Meta1)
 		end,
 		lists:seq(1, ?RECORDS)),
-	Diff = timer:now_diff(now(), Start),
+	Diff = nklib_util:l_timestamp()-Start,
 	?debugFmt("done (~p secs)", [Diff/1000000]).
 
 	
@@ -325,7 +325,7 @@ reindex(Meta) ->
 	ok.
 
 bulk_delete(Meta) ->
-	Start = now(),
+	Start = nklib_util:l_timestamp(),
 	?debugFmt("Deleting ~p records...", [?RECORDS]),
 	lists:foreach(
 		fun(Pos) ->
@@ -333,7 +333,7 @@ bulk_delete(Meta) ->
 			ok = nkbase:del(search_test, search_test, {k, Pos}, Meta1#{ttl=>0})
 		end,
 		lists:seq(1, ?RECORDS)),
-	Diff = timer:now_diff(now(), Start),
+	Diff = nklib_util:l_timestamp()-Start,
 	?debugFmt("done (~p secs)", [Diff/1000000]),
 	[] = search([{i_pos, all}], Meta),
 	[] = search([{i_names, all}], Meta).

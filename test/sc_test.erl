@@ -80,7 +80,7 @@ all() ->
 
 
 bulk_insert() ->
-	Start = now(),
+	Start = nklib_util:l_timestamp(),
 	?debugFmt("Inserting ~p SC records...", [?BULK_CLASSES*?BULK_KEYS]),
 	Classes = lists:seq(1, ?BULK_CLASSES),
 	Keys = lists:seq(1, ?BULK_KEYS),
@@ -93,7 +93,7 @@ bulk_insert() ->
 				Keys)
 		end,
 		Classes),
-	Diff = timer:now_diff(now(), Start),
+	Diff = nklib_util:l_timestamp()-Start,
 	?debugFmt("done (~p secs)\n", [Diff/1000000]).
 
 
