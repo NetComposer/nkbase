@@ -27,7 +27,7 @@
 -export([ensemble_overview/0, ensemble_detail/1]).
 
 -compile(export_all).
--include_lib("riak_ensemble/include/riak_ensemble_types.hrl").
+-include_lib("riak_ensemble_ng/include/riak_ensemble_types.hrl").
 
 
 -type ensembles() :: [{ensemble_id(), ensemble_info()}].

@@ -31,7 +31,7 @@
 -export([synctree_path/2]).
 -export([handle_down/4]).
 
--include_lib("riak_ensemble/include/riak_ensemble_types.hrl").
+-include_lib("riak_ensemble_ng/include/riak_ensemble_types.hrl").
 
 -record(state, {
     ensemble   :: ensemble_id(),
