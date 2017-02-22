@@ -1,6 +1,6 @@
 %% -------------------------------------------------------------------
 %%
-%% Copyright (c) 2015 Carlos Gonzalez Florido.  All Rights Reserved.
+%% Copyright (c) 2017 Carlos Gonzalez Florido.  All Rights Reserved.
 %%
 %% This file is provided to you under the Apache License,
 %% Version 2.0 (the "License"); you may not use this file
@@ -97,6 +97,7 @@ init(From, {Cmd, N, Timeout}) ->
 		nkbase,
 		nkbase_vnode_master, 		
 		Timeout,
+		riak_core_coverage_plan,
 		#state{cmd=Cmd, from=From}
 	}.
 

@@ -1,6 +1,6 @@
 %% -------------------------------------------------------------------
 %%
-%% Copyright (c) 2015 Carlos Gonzalez Florido.  All Rights Reserved.
+%% Copyright (c) 2017 Carlos Gonzalez Florido.  All Rights Reserved.
 %%
 %% This file is provided to you under the Apache License,
 %% Version 2.0 (the "License"); you may not use this file
@@ -38,11 +38,11 @@
          encode_handoff_item/2,
          handle_coverage/4,
          handle_info/2,
+		 handle_overload_command/3,
+		 handle_overload_info/2,
          handle_exit/3,
          ready_to_exit/0,
-         set_vnode_forwarding/2,
-         handle_overload_command/3,
-         handle_overload_info/2]).
+         set_vnode_forwarding/2]).
 
 -include("nkbase.hrl").
 -include_lib("riak_core/include/riak_core_vnode.hrl").
@@ -193,7 +193,7 @@ handle_command({reindex, Backend, ExtKey, Spec}, Sender, State) ->
 	end;
 	
 handle_command(check_long_expire, ignore, #state{expire_check=ExpCheck}=State) ->
-	% lager:warning("CHECK LONG EXPIRE"),
+	lager:warning("CHECK LONG EXPIRE"),
 	Now = nklib_util:l_timestamp(),
 	% Check up to ExpCheck secs ago
 	del_all_expired(ets, Now-1000000*ExpCheck, State),
@@ -563,10 +563,15 @@ terminate(normal, _State) ->
 	ok;
 
 terminate(Reason, #state{pos=Pos}=State) ->
-	lager:debug("NkBase vnode ~p terminate: ~p", [Pos, Reason]),
+	lager:error("NkBase vnode ~p terminate: ~p", [Pos, Reason]),
 	case get_ref(leveldb, State) of
-		{ok, Ref} -> eleveldb:close(Ref);
-		_ -> ok
+		{ok, Ref} ->
+			case catch eleveldb:close(Ref) of
+				{'EXIT', Error} ->lager:error("LevelDB close error: ~p", [Error]);
+				_ -> ok
+			end;
+		_ ->
+			ok
 	end.
 
 

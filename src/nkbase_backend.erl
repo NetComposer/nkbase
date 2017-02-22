@@ -1,6 +1,6 @@
 %% -------------------------------------------------------------------
 %%
-%% Copyright (c) 2015 Carlos Gonzalez Florido.  All Rights Reserved.
+%% Copyright (c) 2017 Carlos Gonzalez Florido.  All Rights Reserved.
 %%
 %% This file is provided to you under the Apache License,
 %% Version 2.0 (the "License"); you may not use this file
@@ -749,10 +749,13 @@ do_fold(leveldb, asc, Ref, '$nk_first', FoldType, FoldFun, Acc) ->
 do_fold(leveldb, desc, Ref, '$nk_last', FoldType, FoldFun, Acc) -> 
 	do_fold(leveldb, desc, Ref, last, FoldType, FoldFun, Acc);
 
-do_fold(leveldb, Order, Ref, Key, FoldType, FoldFun, Acc) -> 
-	{ok, Itr} = case FoldType of
+do_fold(leveldb, Order, Ref, Key, FoldType, FoldFun, Acc) ->
+	{ok, Itr} = try FoldType of
 		keys ->	eleveldb:iterator(Ref, [], keys_only);
 		values -> eleveldb:iterator(Ref, [])
+    catch
+        error:ItrErr ->
+            lager:error("ITERATOR ERROR: ~p", [ItrErr])
 	end,
 	try
 		case Order of

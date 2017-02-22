@@ -4,14 +4,14 @@
 	{modules, []},
 	{registered, []},
 	{mod, {nkbase_app, []}},
-	{applications, [kernel, stdlib, crypto, sasl, lager, nkdist]},
+	{applications, [nkdist]},
 	{env, [
 		{expire_resolution, 1000},		% Expiration timers resolution (msecs)
 		{expire_check, 60}, 			% Time to check for long expires (secs)
 		{vnode_workers, 10},			% Number of vnode parallel workers
 		{leveldb, true},				% Start LevelDB backend
 		{leveldb_opts, [				% See eleveldb.erl
-			{max_open_files, 100}
+			% {max_open_files, 100}
 		]}
 	]}
 ]}.

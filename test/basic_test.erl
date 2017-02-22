@@ -65,7 +65,7 @@ basic_test_() ->
   	}.
 
 
-all() ->
+all_ets() ->
  	application:set_env(nkbase, expire_check, 1, [persistent]),
 	application:set_env(nkbase, expire_resolution, 1, [persistent]),
 	ok = nkbase_cmds:cmd_all(update_config, #{}),
@@ -78,7 +78,8 @@ all() ->
 	scan_keys(Meta),
 	put(Meta),
 	ttl(Meta),
-	bulk_delete(Meta).
+	bulk_delete(Meta),
+    ok.
 
 
 classes() ->

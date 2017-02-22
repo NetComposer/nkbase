@@ -10,3 +10,5 @@ log
 .rebar
 _build
 rebar.lock
+/nkbase.iml
+/.rebar3
